@@ -20,6 +20,7 @@ model User {
   avatarUrl      String?
   role           Role            @default(MEMBER)
   googleAccounts GoogleAccount[]
+  authSessions   AuthSession[]
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
 }
@@ -34,4 +35,22 @@ model GoogleAccount {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
+}
+
+model AuthSession {
+  id                  String    @id @default(cuid())
+  userId              String
+  refreshTokenHash    String    @unique
+  userAgent           String?
+  ipAddress           String?
+  expiresAt           DateTime
+  revokedAt           DateTime?
+  replacedBySessionId String?
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
 }

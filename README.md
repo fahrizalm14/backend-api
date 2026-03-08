@@ -70,11 +70,14 @@ JWT_SECRET=please-change-this-to-a-strong-secret
 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/backend_api
 GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
 CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
+REFRESH_TOKEN_COOKIE_NAME=refresh_token
+REFRESH_TOKEN_TTL_DAYS=30
 ```
 
 `JWT_SECRET` wajib diganti untuk `public-api` (aplikasi akan gagal start jika masih default).
 `CORS_ALLOWED_ORIGINS` opsional. Jika diisi, hanya origin dalam daftar yang diizinkan.
 Jika kosong: development mengizinkan semua origin, production memblokir semua origin.
+`REFRESH_TOKEN_COOKIE_NAME` dan `REFRESH_TOKEN_TTL_DAYS` mengatur nama cookie serta masa berlaku refresh token.
 
 ### 2.2 `internal-api`
 
@@ -109,6 +112,9 @@ PORT=2020
 - `POST /v1/auth/register` (public, email + password)
 - `POST /v1/auth/login` (public, email + password)
 - `POST /v1/auth/google/login` (public)
+- `POST /v1/auth/refresh` (public, via HttpOnly refresh cookie)
+- `POST /v1/auth/logout` (public, revoke current refresh session)
+- `POST /v1/auth/logout-all` (auth, revoke all user sessions)
 - `GET /v1/auth/me` (auth)
 - `GET /v1/auth/admin/ping` (auth + role `admin`)
 

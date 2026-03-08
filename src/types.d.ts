@@ -9,5 +9,7 @@ declare namespace NodeJS {
     DATABASE_URL?: string;
     GOOGLE_CLIENT_ID?: string;
     CORS_ALLOWED_ORIGINS?: string;
+    REFRESH_TOKEN_COOKIE_NAME?: string;
+    REFRESH_TOKEN_TTL_DAYS?: string;
   }
 }

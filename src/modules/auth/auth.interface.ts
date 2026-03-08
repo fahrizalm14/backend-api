@@ -21,6 +21,20 @@ export interface AuthTokenResponse {
   user: AuthUser;
 }
 
+export interface AuthSession {
+  id: string;
+  userId: string;
+  refreshTokenHash: string;
+  expiresAt: Date;
+  revokedAt: Date | null;
+  replacedBySessionId: string | null;
+}
+
+export interface SessionMetadata {
+  userAgent?: string;
+  ipAddress?: string;
+}
+
 export interface IAuthRepository {
   createWithPassword(input: {
     email: string;
@@ -41,4 +55,25 @@ export interface IAuthRepository {
   }): Promise<AuthUser>;
 
   findById(userId: string): Promise<AuthUser | null>;
+
+  createSession(input: {
+    userId: string;
+    refreshTokenHash: string;
+    expiresAt: Date;
+    metadata?: SessionMetadata;
+  }): Promise<AuthSession>;
+
+  findSessionByRefreshTokenHash(refreshTokenHash: string): Promise<AuthSession | null>;
+
+  rotateSession(input: {
+    sessionId: string;
+    userId: string;
+    refreshTokenHash: string;
+    expiresAt: Date;
+    metadata?: SessionMetadata;
+  }): Promise<AuthSession>;
+
+  revokeSession(sessionId: string): Promise<void>;
+
+  revokeAllSessionsByUserId(userId: string): Promise<void>;
 }

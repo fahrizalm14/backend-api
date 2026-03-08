@@ -1,7 +1,12 @@
 import { Role } from '@prisma/client';
 import { injectable } from 'tsyringe';
 
-import { IAuthRepository, AuthUser } from '@/modules/auth/auth.interface';
+import {
+  IAuthRepository,
+  AuthSession,
+  AuthUser,
+  SessionMetadata,
+} from '@/modules/auth/auth.interface';
 import { mapDbRoleToAppRole } from '@/shared/auth/roles';
 import { prisma } from '@/shared/database/prisma';
 import { normalizeEmail } from '@/shared/utils/email';
@@ -114,6 +119,87 @@ export class AuthRepository implements IAuthRepository {
     return user ? this.mapUser(user) : null;
   }
 
+  async createSession(input: {
+    userId: string;
+    refreshTokenHash: string;
+    expiresAt: Date;
+    metadata?: SessionMetadata;
+  }): Promise<AuthSession> {
+    const created = await prisma.authSession.create({
+      data: {
+        userId: input.userId,
+        refreshTokenHash: input.refreshTokenHash,
+        expiresAt: input.expiresAt,
+        userAgent: input.metadata?.userAgent,
+        ipAddress: input.metadata?.ipAddress,
+      },
+    });
+
+    return this.mapSession(created);
+  }
+
+  async findSessionByRefreshTokenHash(refreshTokenHash: string): Promise<AuthSession | null> {
+    const session = await prisma.authSession.findUnique({
+      where: { refreshTokenHash },
+    });
+
+    return session ? this.mapSession(session) : null;
+  }
+
+  async rotateSession(input: {
+    sessionId: string;
+    userId: string;
+    refreshTokenHash: string;
+    expiresAt: Date;
+    metadata?: SessionMetadata;
+  }): Promise<AuthSession> {
+    return prisma.$transaction(async (tx) => {
+      const newSession = await tx.authSession.create({
+        data: {
+          userId: input.userId,
+          refreshTokenHash: input.refreshTokenHash,
+          expiresAt: input.expiresAt,
+          userAgent: input.metadata?.userAgent,
+          ipAddress: input.metadata?.ipAddress,
+        },
+      });
+
+      await tx.authSession.update({
+        where: { id: input.sessionId },
+        data: {
+          revokedAt: new Date(),
+          replacedBySessionId: newSession.id,
+        },
+      });
+
+      return this.mapSession(newSession);
+    });
+  }
+
+  async revokeSession(sessionId: string): Promise<void> {
+    await prisma.authSession.updateMany({
+      where: {
+        id: sessionId,
+        revokedAt: null,
+      },
+      data: {
+        revokedAt: new Date(),
+      },
+    });
+  }
+
+  async revokeAllSessionsByUserId(userId: string): Promise<void> {
+    await prisma.authSession.updateMany({
+      where: {
+        userId,
+        revokedAt: null,
+      },
+      data: {
+        revokedAt: new Date(),
+      },
+    });
+  }
+
   private mapUser(user: {
     id: string;
     email: string;
@@ -127,6 +213,24 @@ export class AuthRepository implements IAuthRepository {
       name: user.name,
       avatarUrl: user.avatarUrl,
       role: mapDbRoleToAppRole(user.role),
+    };
+  }
+
+  private mapSession(session: {
+    id: string;
+    userId: string;
+    refreshTokenHash: string;
+    expiresAt: Date;
+    revokedAt: Date | null;
+    replacedBySessionId: string | null;
+  }): AuthSession {
+    return {
+      id: session.id,
+      userId: session.userId,
+      refreshTokenHash: session.refreshTokenHash,
+      expiresAt: session.expiresAt,
+      revokedAt: session.revokedAt,
+      replacedBySessionId: session.replacedBySessionId,
     };
   }
 }

@@ -33,6 +33,23 @@ const routes: RouteDefinition[] = [
     handler: async (ctx) => controller.googleLogin(ctx),
   },
   {
+    method: 'POST',
+    path: '/refresh',
+    middlewares: [authPublicRateLimit],
+    handler: async (ctx) => controller.refresh(ctx),
+  },
+  {
+    method: 'POST',
+    path: '/logout',
+    handler: async (ctx) => controller.logout(ctx),
+  },
+  {
+    method: 'POST',
+    path: '/logout-all',
+    requiresAuth: true,
+    handler: async (ctx) => controller.logoutAll(ctx),
+  },
+  {
     method: 'GET',
     path: '/me',
     requiresAuth: true,

@@ -35,6 +35,11 @@ paths:
       responses:
         '201':
           description: Register successful
+          headers:
+            Set-Cookie:
+              description: HttpOnly refresh token cookie
+              schema:
+                type: string
           content:
             application/json:
               schema:
@@ -42,6 +47,8 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
         '409':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
           $ref: '#/components/responses/ErrorResponse'
   /auth/login:
     post:
@@ -56,6 +63,11 @@ paths:
       responses:
         '200':
           description: Login successful
+          headers:
+            Set-Cookie:
+              description: HttpOnly refresh token cookie
+              schema:
+                type: string
           content:
             application/json:
               schema:
@@ -63,6 +75,8 @@ paths:
         '400':
           $ref: '#/components/responses/ErrorResponse'
         '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
           $ref: '#/components/responses/ErrorResponse'
   /auth/google/login:
     post:
@@ -77,12 +91,79 @@ paths:
       responses:
         '200':
           description: Login successful
+          headers:
+            Set-Cookie:
+              description: HttpOnly refresh token cookie
+              schema:
+                type: string
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/AuthTokenEnvelope'
         '400':
           $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+  /auth/refresh:
+    post:
+      tags: [Auth]
+      summary: Refresh access token using refresh token cookie
+      description: Requires refresh token in HttpOnly cookie.
+      security:
+        - refreshCookieAuth: []
+      responses:
+        '200':
+          description: Token refreshed successfully
+          headers:
+            Set-Cookie:
+              description: Rotated HttpOnly refresh token cookie
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenEnvelope'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/ErrorResponse'
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Logout current device session
+      description: Revokes current refresh token session if cookie exists.
+      responses:
+        '200':
+          description: Logout successful
+          headers:
+            Set-Cookie:
+              description: Clear refresh token cookie
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BooleanEnvelope'
+  /auth/logout-all:
+    post:
+      tags: [Auth]
+      summary: Logout all sessions on all devices
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: All sessions logged out successfully
+          headers:
+            Set-Cookie:
+              description: Clear refresh token cookie
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BooleanEnvelope'
         '401':
           $ref: '#/components/responses/ErrorResponse'
   /auth/me:
@@ -241,6 +322,10 @@ components:
       type: http
       scheme: bearer
       bearerFormat: JWT
+    refreshCookieAuth:
+      type: apiKey
+      in: cookie
+      name: refresh_token
   parameters:
     ProjectId:
       in: path
@@ -426,6 +511,15 @@ components:
         data:
           $ref: '#/components/schemas/Project'
     DeleteProjectEnvelope:
+      type: object
+      required: [message, data]
+      properties:
+        message:
+          type: string
+        data:
+          type: boolean
+          example: true
+    BooleanEnvelope:
       type: object
       required: [message, data]
       properties:

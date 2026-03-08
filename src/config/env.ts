@@ -12,6 +12,8 @@ export interface Env {
   DATABASE_URL: string;
   GOOGLE_CLIENT_ID: string;
   CORS_ALLOWED_ORIGINS: string[];
+  REFRESH_TOKEN_COOKIE_NAME: string;
+  REFRESH_TOKEN_TTL_DAYS: number;
 }
 
 const parsePort = (value: string | undefined): number => {
@@ -33,6 +35,11 @@ const parseAllowedOrigins = (value: string | undefined): string[] => {
     .filter((item) => item.length > 0);
 };
 
+const parsePositiveInteger = (value: string | undefined, fallback: number): number => {
+  const parsed = Number(value);
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback;
+};
+
 export const env: Env = {
   PORT: parsePort(process.env.PORT),
   HOST: process.env.HOST ?? '0.0.0.0',
@@ -43,6 +50,8 @@ export const env: Env = {
   DATABASE_URL: process.env.DATABASE_URL ?? '',
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID ?? '',
   CORS_ALLOWED_ORIGINS: parseAllowedOrigins(process.env.CORS_ALLOWED_ORIGINS),
+  REFRESH_TOKEN_COOKIE_NAME: process.env.REFRESH_TOKEN_COOKIE_NAME ?? 'refresh_token',
+  REFRESH_TOKEN_TTL_DAYS: parsePositiveInteger(process.env.REFRESH_TOKEN_TTL_DAYS, 30),
 };
 
 export function assertSecurityEnv(targetName: string): void {

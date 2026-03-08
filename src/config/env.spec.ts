@@ -14,4 +14,7 @@ test('env memiliki default dan shape valid', () => {
   assert.equal(typeof env.DATABASE_URL, 'string');
   assert.equal(typeof env.GOOGLE_CLIENT_ID, 'string');
   assert.ok(Array.isArray(env.CORS_ALLOWED_ORIGINS));
+  assert.equal(typeof env.REFRESH_TOKEN_COOKIE_NAME, 'string');
+  assert.ok(Number.isInteger(env.REFRESH_TOKEN_TTL_DAYS));
+  assert.ok(env.REFRESH_TOKEN_TTL_DAYS > 0);
 });
