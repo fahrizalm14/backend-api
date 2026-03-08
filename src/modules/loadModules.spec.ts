@@ -16,16 +16,16 @@ test('loadConfiguredModules memuat module sesuai deployment target', async () =>
   } as never);
 
   assert.equal(modules.length, 2);
-  assert.ok(modules.some((mod) => mod.prefix === '/v1/auth'));
-  assert.ok(modules.some((mod) => mod.prefix === '/v1/projects'));
+  assert.ok(modules.some((mod) => mod.prefix === '/auth'));
+  assert.ok(modules.some((mod) => mod.prefix === '/projects'));
   assert.equal(loggerMessages.length, 0);
 });
 
 test('loadConfiguredModules mencatat error bila loader tidak ditemukan', async () => {
-  const originalEntries = [...deploymentTargets['public-api'].modules];
-  deploymentTargets['public-api'].modules = ['unknown-module' as never];
-
-  const originalLoader = availableModules['unknown-module'];
+  const originalProjectsLoader = availableModules.projects;
+  (
+    availableModules as unknown as Record<string, unknown>
+  ).projects = undefined;
 
   const loggerMessages: string[] = [];
   const modules = await loadConfiguredModules('public-api', {
@@ -35,15 +35,12 @@ test('loadConfiguredModules mencatat error bila loader tidak ditemukan', async (
     },
   } as never);
 
-  assert.equal(modules.length, 0);
+  assert.equal(modules.length, 1);
   assert.ok(loggerMessages.some((message) => message.includes('Module loader not found')));
 
-  if (originalLoader) {
-    availableModules['unknown-module'] = originalLoader;
-  } else {
-    delete availableModules['unknown-module'];
-  }
-  deploymentTargets['public-api'].modules = originalEntries;
+  (
+    availableModules as unknown as Record<string, unknown>
+  ).projects = originalProjectsLoader;
 });
 
 test('loadConfiguredModules fallback ke public-api saat target tidak ditemukan', async () => {

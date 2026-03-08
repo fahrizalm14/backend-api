@@ -20,7 +20,7 @@ export async function loadConfiguredModules(
   }
 
   for (const entry of entries) {
-    const moduleName = typeof entry === 'string' ? entry : entry.name;
+    const moduleName = entry;
     const loader = availableModules[moduleName];
     if (!loader) {
       logger.error(`Module loader not found: ${moduleName}`);
@@ -30,9 +30,7 @@ export async function loadConfiguredModules(
     const factory = await loader();
     const result = factory();
     modules.push({
-      prefix: typeof entry === 'object' && entry.prefix
-        ? entry.prefix
-        : `/v1/${moduleName}`,
+      prefix: `/${moduleName}`,
       routes: result.routes,
     });
   }
