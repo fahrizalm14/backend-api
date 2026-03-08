@@ -44,6 +44,14 @@ export class FastifyHttpServer implements HttpServer {
 
   private buildRouteHandler(route: RouteDefinition) {
     return async (request: FastifyRequest, reply: FastifyReply) => {
+      if (route.middlewares?.length) {
+        for (const middleware of route.middlewares) {
+          if (middleware.fastifyRoute) {
+            await middleware.fastifyRoute(request, reply);
+          }
+        }
+      }
+
       const auth = route.requiresAuth
         ? this.resolveAuthorization(request.headers.authorization)
         : undefined;
@@ -94,6 +102,13 @@ export class FastifyHttpServer implements HttpServer {
   private mountModule(module: ModuleDefinition): void {
     this.app.register(
       async (instance) => {
+        if (module.middlewares?.length) {
+          for (const middleware of module.middlewares) {
+            if (middleware.fastify) {
+              await middleware.fastify(instance);
+            }
+          }
+        }
         for (const route of module.routes) {
           this.registerRoute(instance, route);
         }

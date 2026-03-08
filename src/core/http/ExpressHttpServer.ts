@@ -91,14 +91,26 @@ export class ExpressHttpServer implements HttpServer {
       }
     };
 
+    const routeMiddlewares = (route.middlewares ?? [])
+      .map((middleware) => middleware.expressRoute ?? middleware.express)
+      .filter((middleware): middleware is RequestHandler => Boolean(middleware));
+
     (router[method] as (path: string, ...handlers: RequestHandler[]) => void)(
       route.path,
+      ...routeMiddlewares,
       wrapped,
     );
   }
 
   private mountModule(module: ModuleDefinition): void {
     const router = express.Router();
+    if (module.middlewares?.length) {
+      for (const middleware of module.middlewares) {
+        if (middleware.express) {
+          router.use(middleware.express);
+        }
+      }
+    }
     for (const route of module.routes) {
       this.registerRoute(router, route);
     }

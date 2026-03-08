@@ -29,6 +29,7 @@ export async function loadConfiguredModules(
     modules.push({
       prefix: `/${moduleName}`,
       routes: result.routes,
+      middlewares: result.middlewares,
     });
   }
 

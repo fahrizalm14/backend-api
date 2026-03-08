@@ -117,7 +117,61 @@ PORT=2020
 - `400 Invalid payload/query`: input tidak lolos validasi
 - Server tidak jalan: cek `PORT` dan konflik port
 
-## 5. API Docs
+## 5. Menambahkan Middleware
+
+Middleware bisa dipasang di 3 level: global, per-module, dan per-endpoint.
+
+### 5.1 Global Middleware
+
+Tambahkan di `src/core/http/createMiddlewares.ts` lewat `createGlobalMiddlewares()`.
+Middleware ini berlaku ke semua endpoint.
+
+### 5.2 Middleware Per Module
+
+Di file module routes (`*.routes.ts`), return `middlewares` di `ModuleBuildResult`.
+
+```ts
+import type { HttpMiddleware, ModuleBuildResult } from '@/core/http/types';
+
+const middlewares: HttpMiddleware[] = [
+  {
+    express: (req, _res, next) => next(),
+    fastify: async (instance) => {
+      instance.addHook('onRequest', async () => {});
+    },
+  },
+];
+
+export default function createExampleModule(): ModuleBuildResult {
+  return {
+    middlewares,
+    routes,
+  };
+}
+```
+
+### 5.3 Middleware Per Endpoint
+
+Tambahkan `middlewares` pada `RouteDefinition`.
+
+```ts
+{
+  method: 'GET',
+  path: '/me',
+  middlewares: [
+    {
+      expressRoute: (req, _res, next) => next(),
+      fastifyRoute: async (request, _reply) => {},
+    },
+  ],
+  handler: async (ctx) => controller.me(ctx),
+}
+```
+
+- `expressRoute` / `fastifyRoute`: khusus endpoint tersebut.
+- `express` / `fastify`: tetap bisa dipakai untuk level module.
+
+## 6. API Docs
 
 - OpenAPI spec: `docs/openapi.yaml`
 - HTML docs (Swagger UI / Try it out): `docs/index.html`
@@ -130,6 +184,6 @@ npx serve docs
 
 Lalu akses `http://localhost:3000`.
 
-## 6. Lisensi
+## 7. Lisensi
 
 Belum ditentukan. Sesuaikan kebijakan organisasi sebelum produksi.

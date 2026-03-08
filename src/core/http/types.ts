@@ -41,10 +41,19 @@ export interface RouteDefinition {
   handler: RouteHandler;
   requiresAuth?: boolean;
   requiredRoles?: AppRole[];
+  middlewares?: HttpMiddleware[];
+}
+
+export interface HttpMiddleware {
+  express?: RequestHandler;
+  expressRoute?: RequestHandler;
+  fastify?: (instance: FastifyInstance) => Promise<void> | void;
+  fastifyRoute?: (request: FastifyRequest, reply: FastifyReply) => Promise<void> | void;
 }
 
 export interface ModuleBuildResult {
   routes: RouteDefinition[];
+  middlewares?: HttpMiddleware[];
 }
 
 export interface ModuleDefinition extends ModuleBuildResult {
@@ -53,10 +62,7 @@ export interface ModuleDefinition extends ModuleBuildResult {
 
 export type ModuleFactory = () => ModuleBuildResult;
 
-export interface GlobalMiddleware {
-  express?: RequestHandler;
-  fastify?: (instance: FastifyInstance) => Promise<void> | void;
-}
+export type GlobalMiddleware = HttpMiddleware;
 
 export interface HttpServer {
   register(module: ModuleDefinition): void;
