@@ -1,0 +1,41 @@
+{
+  "name": "backend-api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "commonjs",
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:public\" \"npm run dev:internal\" \"npm run dev:worker\"",
+    "dev:public": "DEPLOYMENT_TARGET=public-api tsx watch src/main.ts",
+    "dev:internal": "DEPLOYMENT_TARGET=internal-api tsx watch src/main.ts",
+    "dev:worker": "DEPLOYMENT_TARGET=worker tsx watch src/main.ts",
+    "build": "tsup --sourcemap",
+    "build:prod": "tsup --minify --no-sourcemap && javascript-obfuscator dist/main.js --output dist/main.js --compact true --identifier-names-generator hexadecimal --string-array true --string-array-encoding base64 --string-array-threshold 1",
+    "start": "node dist/main.js",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "tsx --test src/**/*.spec.ts",
+    "test:node": "node --import tsx --test src/**/*.spec.ts"
+  },
+  "dependencies": {
+    "@fastify/cors": "^11.1.0",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "express": "^5.1.0",
+    "fastify": "^5.6.1",
+    "jsonwebtoken": "^9.0.3",
+    "reflect-metadata": "^0.2.2",
+    "tsyringe": "^4.10.0",
+    "zod": "^4.0.14"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^24.2.0",
+    "concurrently": "^9.2.1",
+    "javascript-obfuscator": "^5.3.0",
+    "tsup": "^8.5.0",
+    "tsx": "^4.20.3",
+    "typescript": "^5.9.2"
+  }
+}
