@@ -20,7 +20,7 @@ import { isAppRole } from '@/shared/auth/roles';
 export class FastifyHttpServer implements HttpServer {
   private readonly app: FastifyInstance;
   private readonly modules: ModuleDefinition[] = [];
-  private readonly globalMiddlewares: GlobalMiddleware['fastify'][] = [];
+  private readonly globalMiddlewares: NonNullable<GlobalMiddleware['fastify']>[] = [];
 
   constructor(private readonly logger: Logger) {
     this.app = Fastify({ logger: false });

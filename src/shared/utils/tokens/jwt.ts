@@ -1,4 +1,4 @@
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt, { JwtPayload, SignOptions } from 'jsonwebtoken';
 
 import { env } from '@/config/env';
 import { AppRole, isAppRole } from '@/shared/auth/roles';
@@ -41,5 +41,6 @@ export function signAccessToken(payload: {
   role: AppRole;
   name?: string;
 }): string {
-  return jwt.sign(payload, env.JWT_SECRET, { expiresIn: env.JWT_EXPIRES_IN });
+  const expiresIn = env.JWT_EXPIRES_IN as SignOptions['expiresIn'];
+  return jwt.sign(payload, env.JWT_SECRET, { expiresIn });
 }

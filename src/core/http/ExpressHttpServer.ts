@@ -57,7 +57,12 @@ export class ExpressHttpServer implements HttpServer {
 
         const result = await route.handler({
           framework: 'express',
-          params: req.params,
+          params: Object.fromEntries(
+            Object.entries(req.params).map(([key, value]) => [
+              key,
+              Array.isArray(value) ? value[0] : value,
+            ]),
+          ) as Record<string, string>,
           query: req.query as Record<string, unknown>,
           body: req.body,
           auth,

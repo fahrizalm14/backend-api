@@ -32,7 +32,11 @@ test('ProjectsService.listProjects memanggil repository dengan pagination', asyn
     delete: async () => false,
   };
 
-  let captured: { userId: string; page: number; limit: number } | null = null;
+  let captured: { userId: string; page: number; limit: number } = {
+    userId: '',
+    page: 0,
+    limit: 0,
+  };
   repository.listByUser = async (userId, pagination) => {
     captured = { userId, page: pagination.page, limit: pagination.limit };
     return {
@@ -44,9 +48,9 @@ test('ProjectsService.listProjects memanggil repository dengan pagination', asyn
   const service = createServiceWithRepository(repository);
   const result = await service.listProjects('u1', 2, 5);
 
-  assert.equal(captured?.userId, 'u1');
-  assert.equal(captured?.page, 2);
-  assert.equal(captured?.limit, 5);
+  assert.equal(captured.userId, 'u1');
+  assert.equal(captured.page, 2);
+  assert.equal(captured.limit, 5);
   assert.equal(result.meta.page, 2);
 });
 
