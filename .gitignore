@@ -72,3 +72,5 @@ Thumbs.db
 # Temporary folders
 tmp/
 temp/
+# Service-specific local env files
+env/*.env

@@ -324,6 +324,9 @@ Penjelasan:
 - `DEPLOYMENT_TARGET`: target microservice yang dijalankan (`public-api`, `internal-api`, `worker`)
 - `HTTP_SERVER`: provider HTTP (`express` atau `fastify`)
 - `JWT_SECRET`: secret verifikasi JWT
+- `JWT_EXPIRES_IN`: masa berlaku access token internal (contoh `7d`)
+- `DATABASE_URL`: koneksi database untuk Prisma (model auth: `User`, `GoogleAccount`)
+- `GOOGLE_CLIENT_ID`: client ID OAuth Google yang dipakai validasi `idToken`
 
 ## 10. Endpoint Bawaan
 
@@ -339,6 +342,13 @@ Penjelasan:
 - `GET /v1/projects/:projectId` (auth)
 - `PATCH /v1/projects/:projectId` (auth)
 - `DELETE /v1/projects/:projectId` (auth)
+
+### 10.3 Auth Module
+
+- `POST /v1/auth/google/login` (public) body: `{ "idToken": "..." }`
+- `GET /v1/auth/me` (auth)
+- `GET /v1/auth/admin/ping` (auth + role `admin`)
+- Data login Google dipersist ke model Prisma `User` dan `GoogleAccount`
 
 ## 11. Menambah Modul Baru
 

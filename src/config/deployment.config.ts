@@ -3,6 +3,7 @@ import type { ModuleFactory } from '@/core/http/types';
 type ModuleLoader = () => Promise<ModuleFactory>;
 
 export const availableModules: Record<string, ModuleLoader> = {
+  auth: async () => (await import('@/modules/auth/auth.routes')).default,
   projects: async () => (await import('@/modules/projects/projects.routes')).default,
 };
 
@@ -23,7 +24,7 @@ export interface DeploymentTarget {
 export const deploymentTargets: Record<string, DeploymentTarget> = {
   'public-api': {
     port: 2001,
-    modules: ['projects'],
+    modules: ['auth', 'projects'],
   },
   'internal-api': {
     port: 2002,

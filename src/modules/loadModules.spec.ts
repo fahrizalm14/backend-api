@@ -15,8 +15,9 @@ test('loadConfiguredModules memuat module sesuai deployment target', async () =>
     },
   } as never);
 
-  assert.equal(modules.length, 1);
-  assert.equal(modules[0].prefix, '/v1/projects');
+  assert.equal(modules.length, 2);
+  assert.ok(modules.some((mod) => mod.prefix === '/v1/auth'));
+  assert.ok(modules.some((mod) => mod.prefix === '/v1/projects'));
   assert.equal(loggerMessages.length, 0);
 });
 
@@ -55,7 +56,7 @@ test('loadConfiguredModules fallback ke public-api saat target tidak ditemukan',
     },
   } as never);
 
-  assert.equal(modules.length, 1);
+  assert.equal(modules.length, 2);
   assert.ok(
     loggerMessages.some((message) =>
       message.includes('DEPLOYMENT_TARGET "does-not-exist" not found'),

@@ -5,6 +5,7 @@ import type {
   FastifyReply,
   FastifyRequest,
 } from 'fastify';
+import type { AppRole } from '@/shared/auth/roles';
 
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
@@ -45,6 +46,7 @@ export interface RouteDefinition {
   path: string;
   handler: RouteHandler;
   requiresAuth?: boolean;
+  requiredRoles?: AppRole[];
 }
 
 export interface ModuleBuildResult {

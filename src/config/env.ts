@@ -6,6 +6,9 @@ export interface Env {
   DEPLOYMENT_TARGET: string;
   HTTP_SERVER: 'express' | 'fastify';
   JWT_SECRET: string;
+  JWT_EXPIRES_IN: string;
+  DATABASE_URL: string;
+  GOOGLE_CLIENT_ID: string;
 }
 
 const parsePort = (value: string | undefined): number => {
@@ -25,4 +28,7 @@ export const env: Env = {
   DEPLOYMENT_TARGET: process.env.DEPLOYMENT_TARGET ?? 'public-api',
   HTTP_SERVER: parseHttpServer(process.env.HTTP_SERVER),
   JWT_SECRET: process.env.JWT_SECRET ?? 'replace-me',
+  JWT_EXPIRES_IN: process.env.JWT_EXPIRES_IN ?? '7d',
+  DATABASE_URL: process.env.DATABASE_URL ?? '',
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID ?? '',
 };

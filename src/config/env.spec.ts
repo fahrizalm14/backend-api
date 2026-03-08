@@ -10,4 +10,7 @@ test('env memiliki default dan shape valid', () => {
   assert.equal(typeof env.DEPLOYMENT_TARGET, 'string');
   assert.ok(env.HTTP_SERVER === 'express' || env.HTTP_SERVER === 'fastify');
   assert.equal(typeof env.JWT_SECRET, 'string');
+  assert.equal(typeof env.JWT_EXPIRES_IN, 'string');
+  assert.equal(typeof env.DATABASE_URL, 'string');
+  assert.equal(typeof env.GOOGLE_CLIENT_ID, 'string');
 });

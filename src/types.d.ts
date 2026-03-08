@@ -5,5 +5,8 @@ declare namespace NodeJS {
     DEPLOYMENT_TARGET?: string;
     HTTP_SERVER?: 'express' | 'fastify';
     JWT_SECRET?: string;
+    JWT_EXPIRES_IN?: string;
+    DATABASE_URL?: string;
+    GOOGLE_CLIENT_ID?: string;
   }
 }

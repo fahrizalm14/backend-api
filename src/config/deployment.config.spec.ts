@@ -7,10 +7,12 @@ import {
   resolveDeploymentTarget,
 } from "./deployment.config";
 
-test("deployment.config memiliki target public-api dan module projects", () => {
+test("deployment.config memiliki target public-api dan module auth/projects", () => {
   assert.ok(Array.isArray(deploymentTargets["public-api"].modules));
+  assert.ok(deploymentTargets["public-api"].modules.includes("auth"));
   assert.ok(deploymentTargets["public-api"].modules.includes("projects"));
   assert.equal(deploymentTargets.worker.port, 2020);
+  assert.equal(typeof availableModules.auth, "function");
   assert.equal(typeof availableModules.projects, "function");
 });
 

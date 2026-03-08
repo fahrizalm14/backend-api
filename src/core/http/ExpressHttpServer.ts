@@ -10,6 +10,7 @@ import {
 } from '@/core/http/types';
 import { extractBearerToken, verifyJwt } from '@/shared/utils/tokens/jwt';
 import { Logger } from '@/shared/utils/logger';
+import { isAppRole } from '@/shared/auth/roles';
 
 export class ExpressHttpServer implements HttpServer {
   private readonly app = express();
@@ -47,6 +48,12 @@ export class ExpressHttpServer implements HttpServer {
         const auth = route.requiresAuth
           ? this.resolveAuthorization(req.headers.authorization)
           : undefined;
+        if (route.requiredRoles?.length) {
+          const role = auth?.role;
+          if (!isAppRole(role) || !route.requiredRoles.includes(role)) {
+            throw new AppError(403, 'Forbidden');
+          }
+        }
 
         const result = await route.handler({
           framework: 'express',
