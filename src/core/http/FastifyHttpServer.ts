@@ -137,6 +137,15 @@ export class FastifyHttpServer implements HttpServer {
   }
 }
 
-export async function registerFastifyCors(instance: FastifyInstance) {
-  await instance.register(fastifyCors, { origin: true });
+export async function registerFastifyCors(
+  instance: FastifyInstance,
+  allowedOrigins: string[] = [],
+) {
+  const origin =
+    allowedOrigins.length === 0
+      ? true
+      : (requestOrigin: string | undefined, cb: (error: Error | null, allow: boolean) => void) => {
+          cb(null, !requestOrigin || allowedOrigins.includes(requestOrigin));
+        };
+  await instance.register(fastifyCors, { origin });
 }

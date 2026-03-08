@@ -67,7 +67,10 @@ PORT=2001
 JWT_SECRET=replace-me
 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/backend_api
 GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
+CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
 ```
+
+`CORS_ALLOWED_ORIGINS` opsional. Jika diisi, hanya origin dalam daftar yang diizinkan. Jika kosong, semua origin diizinkan.
 
 ### 2.2 `internal-api`
 

@@ -8,5 +8,6 @@ declare namespace NodeJS {
     JWT_EXPIRES_IN?: string;
     DATABASE_URL?: string;
     GOOGLE_CLIENT_ID?: string;
+    CORS_ALLOWED_ORIGINS?: string;
   }
 }
