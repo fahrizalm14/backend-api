@@ -4,8 +4,8 @@ import { container } from 'tsyringe';
 import { resolveDeploymentTarget } from '@/config/deployment.config';
 import { env } from '@/config/env';
 import { App } from '@/core/App';
-import { createGlobalMiddlewares } from '@/core/http/createMiddlewares';
 import { createHttpServer } from '@/core/http/createHttpServer';
+import { createGlobalMiddlewares } from '@/core/http/createMiddlewares';
 import { createRouteResponse } from '@/core/http/response';
 import { loadConfiguredModules } from '@/modules/loadModules';
 import { Logger } from '@/shared/utils/logger';
@@ -36,7 +36,7 @@ async function main() {
     routes: [
       {
         method: 'GET',
-        path: '/v1/health',
+        path: '/health',
         handler: async () =>
           createRouteResponse({
             message: 'Service is healthy',

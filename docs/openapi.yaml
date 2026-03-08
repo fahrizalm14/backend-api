@@ -11,7 +11,7 @@ tags:
   - name: Auth
   - name: Projects
 paths:
-  /v1/health:
+  /health:
     get:
       tags: [Health]
       summary: Health check

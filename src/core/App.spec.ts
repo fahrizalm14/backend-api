@@ -41,7 +41,7 @@ test('App.start mendaftarkan middleware dan module ke server', async () => {
 
   const middleware: GlobalMiddleware = { express: (_req, _res, next) => next() };
   const moduleDef: ModuleDefinition = {
-    prefix: '/v1/test',
+    prefix: '/test',
     routes: [],
   };
 
@@ -50,6 +50,6 @@ test('App.start mendaftarkan middleware dan module ke server', async () => {
 
   assert.equal(middlewares.length, 1);
   assert.equal(modules.length, 1);
-  assert.equal(modules[0].prefix, '/v1/test');
+  assert.equal(modules[0].prefix, '/test');
   assert.ok(logs.includes('Application ready'));
 });
