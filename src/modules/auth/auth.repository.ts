@@ -7,6 +7,38 @@ import { prisma } from '@/shared/database/prisma';
 
 @injectable()
 export class AuthRepository implements IAuthRepository {
+  async createWithPassword(input: {
+    email: string;
+    passwordHash: string;
+    name?: string;
+  }): Promise<AuthUser> {
+    const created = await prisma.user.create({
+      data: {
+        email: input.email,
+        passwordHash: input.passwordHash,
+        name: input.name,
+        role: Role.MEMBER,
+      },
+    });
+
+    return this.mapUser(created);
+  }
+
+  async findCredentialByEmail(email: string): Promise<{
+    user: AuthUser;
+    passwordHash: string | null;
+  } | null> {
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (!user) {
+      return null;
+    }
+
+    return {
+      user: this.mapUser(user),
+      passwordHash: user.passwordHash,
+    };
+  }
+
   async findOrCreateFromGoogle(input: {
     googleSub: string;
     email: string;
@@ -22,6 +54,7 @@ export class AuthRepository implements IAuthRepository {
       const updatedUser = await prisma.user.update({
         where: { id: existingAccount.user.id },
         data: {
+          email: input.email,
           name: input.name ?? existingAccount.user.name,
           avatarUrl: input.avatarUrl ?? existingAccount.user.avatarUrl,
         },
@@ -45,6 +78,7 @@ export class AuthRepository implements IAuthRepository {
       const updated = await prisma.user.update({
         where: { id: existingUser.id },
         data: {
+          email: input.email,
           name: input.name ?? existingUser.name,
           avatarUrl: input.avatarUrl ?? existingUser.avatarUrl,
         },

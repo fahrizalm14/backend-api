@@ -99,6 +99,8 @@ PORT=2020
 
 ### 3.3 Auth
 
+- `POST /v1/auth/register` (public, email + password)
+- `POST /v1/auth/login` (public, email + password)
 - `POST /v1/auth/google/login` (public)
 - `GET /v1/auth/me` (auth)
 - `GET /v1/auth/admin/ping` (auth + role `admin`)

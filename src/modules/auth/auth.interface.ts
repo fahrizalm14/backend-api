@@ -22,6 +22,17 @@ export interface AuthTokenResponse {
 }
 
 export interface IAuthRepository {
+  createWithPassword(input: {
+    email: string;
+    passwordHash: string;
+    name?: string;
+  }): Promise<AuthUser>;
+
+  findCredentialByEmail(email: string): Promise<{
+    user: AuthUser;
+    passwordHash: string | null;
+  } | null>;
+
   findOrCreateFromGoogle(input: {
     googleSub: string;
     email: string;

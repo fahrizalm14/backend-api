@@ -96,6 +96,7 @@ Pola wajib:
 - Route yang butuh login harus `requiresAuth: true`.
 - Untuk role-based access, gunakan `requiredRoles` di route definition.
 - Service tetap wajib verifikasi ownership meskipun auth sudah valid.
+- Login manual (`email + password`) tersedia di `POST /v1/auth/register` dan `POST /v1/auth/login`.
 - Login Google menggunakan endpoint `POST /v1/auth/google/login` dan data user disimpan di Prisma model `User` + `GoogleAccount`.
 
 ## 6. Menambah Modul Baru

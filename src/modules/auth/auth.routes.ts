@@ -9,6 +9,16 @@ const controller = container.resolve(AuthController);
 const routes: RouteDefinition[] = [
   {
     method: 'POST',
+    path: '/register',
+    handler: async (ctx) => controller.register(ctx),
+  },
+  {
+    method: 'POST',
+    path: '/login',
+    handler: async (ctx) => controller.login(ctx),
+  },
+  {
+    method: 'POST',
     path: '/google/login',
     handler: async (ctx) => controller.googleLogin(ctx),
   },
