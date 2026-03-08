@@ -92,7 +92,7 @@ PORT=2020
 
 ### 3.1 Health Check
 
-- `GET /v1/health`
+- `GET /health`
 
 ### 3.2 Projects (contoh modul)
 
@@ -175,6 +175,12 @@ Tambahkan `middlewares` pada `RouteDefinition`.
 
 - OpenAPI spec: `docs/openapi.yaml`
 - HTML docs (Swagger UI / Try it out): `docs/index.html`
+- Full docs site (Docusaurus engine): `website/` (source docs tetap di `docs/guides`)
+
+Mode: strict isolation
+
+- Root `package.json` hanya untuk core aplikasi.
+- Semua script docs dijalankan dari `website/package.json`.
 
 Contoh buka lokal:
 
@@ -183,6 +189,27 @@ npx serve docs
 ```
 
 Lalu akses `http://localhost:3000`.
+
+Menjalankan full docs site:
+
+```bash
+cd website
+pnpm run start
+```
+
+Build docs site:
+
+```bash
+cd website
+pnpm run build
+```
+
+Typecheck docs site:
+
+```bash
+cd website
+pnpm run typecheck
+```
 
 ## 7. Lisensi
 

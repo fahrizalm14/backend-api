@@ -1,0 +1,27 @@
+{
+  "name": "backend-api-docs",
+  "version": "1.0.0",
+  "description": "Docusaurus site for backend-api documentation.",
+  "private": true,
+  "scripts": {
+    "sync": "node ./scripts/sync-doc-assets.mjs",
+    "start": "pnpm run sync && docusaurus start --host 0.0.0.0 --port 3001",
+    "build": "pnpm run sync && docusaurus build",
+    "serve": "docusaurus serve",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "check": "pnpm run sync && pnpm run typecheck && pnpm run build"
+  },
+  "dependencies": {
+    "@docusaurus/core": "^3.9.2",
+    "@docusaurus/plugin-content-docs": "^3.9.2",
+    "@docusaurus/preset-classic": "^3.9.2",
+    "@docusaurus/types": "^3.9.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@docusaurus/tsconfig": "^3.9.2",
+    "@types/node": "^24.2.0",
+    "typescript": "^5.9.2"
+  }
+}
