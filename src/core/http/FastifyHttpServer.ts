@@ -155,9 +155,10 @@ export class FastifyHttpServer implements HttpServer {
 export async function registerFastifyCors(
   instance: FastifyInstance,
   allowedOrigins: string[] = [],
+  allowAllOriginsWhenEmpty = true,
 ) {
   const origin =
-    allowedOrigins.length === 0
+    allowedOrigins.length === 0 && allowAllOriginsWhenEmpty
       ? true
       : (
           requestOrigin: string | undefined,

@@ -18,10 +18,26 @@ interface GoogleTokenInfoResponse {
 }
 
 const GOOGLE_ISSUERS = new Set(['accounts.google.com', 'https://accounts.google.com']);
+const GOOGLE_TOKENINFO_TIMEOUT_MS = 3_000;
 
 export async function verifyGoogleIdToken(idToken: string): Promise<GoogleIdentity> {
   const endpoint = `https://oauth2.googleapis.com/tokeninfo?id_token=${encodeURIComponent(idToken)}`;
-  const response = await fetch(endpoint);
+  const abortController = new AbortController();
+  const timeout = setTimeout(() => {
+    abortController.abort();
+  }, GOOGLE_TOKENINFO_TIMEOUT_MS);
+
+  let response: Response;
+  try {
+    response = await fetch(endpoint, { signal: abortController.signal });
+  } catch (error) {
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new Error('Google token verification timeout');
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
 
   if (!response.ok) {
     throw new Error('Invalid Google token');

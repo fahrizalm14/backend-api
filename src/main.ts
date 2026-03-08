@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { container } from 'tsyringe';
 
 import { resolveDeploymentTarget } from '@/config/deployment.config';
-import { env } from '@/config/env';
+import { assertSecurityEnv, env } from '@/config/env';
 import { App } from '@/core/App';
 import { createHttpServer } from '@/core/http/createHttpServer';
 import { createGlobalMiddlewares } from '@/core/http/createMiddlewares';
@@ -15,6 +15,7 @@ async function main() {
   const resolvedTarget = resolveDeploymentTarget(env.DEPLOYMENT_TARGET);
   const targetName = resolvedTarget.targetName;
   const target = resolvedTarget.target;
+  assertSecurityEnv(targetName);
 
   logger.info(`Starting target: ${targetName}`);
 

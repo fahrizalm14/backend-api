@@ -66,13 +66,15 @@ pnpm test
 ```env
 DEPLOYMENT_TARGET=public-api
 PORT=2001
-JWT_SECRET=replace-me
+JWT_SECRET=please-change-this-to-a-strong-secret
 DATABASE_URL=postgresql://postgres:postgres@localhost:5432/backend_api
 GOOGLE_CLIENT_ID=your-google-client-id.apps.googleusercontent.com
 CORS_ALLOWED_ORIGINS=http://localhost:3000,http://localhost:5173
 ```
 
-`CORS_ALLOWED_ORIGINS` opsional. Jika diisi, hanya origin dalam daftar yang diizinkan. Jika kosong, semua origin diizinkan.
+`JWT_SECRET` wajib diganti untuk `public-api` (aplikasi akan gagal start jika masih default).
+`CORS_ALLOWED_ORIGINS` opsional. Jika diisi, hanya origin dalam daftar yang diizinkan.
+Jika kosong: development mengizinkan semua origin, production memblokir semua origin.
 
 ### 2.2 `internal-api`
 

@@ -8,6 +8,7 @@ import {
   AuthUser,
   IAuthRepository,
 } from '@/modules/auth/auth.interface';
+import { normalizeEmail } from '@/shared/utils/email';
 import { hashPassword, verifyPassword } from '@/shared/utils/password';
 import { verifyGoogleIdToken } from '@/shared/utils/google/verifyGoogleIdToken';
 import { signAccessToken } from '@/shared/utils/tokens/jwt';
@@ -24,7 +25,8 @@ export class AuthService {
     password: string;
     name?: string;
   }): Promise<AuthTokenResponse> {
-    const existing = await this.repository.findCredentialByEmail(input.email);
+    const email = normalizeEmail(input.email);
+    const existing = await this.repository.findCredentialByEmail(email);
     if (existing?.passwordHash) {
       throw new AppError(409, 'Email already registered');
     }
@@ -33,8 +35,8 @@ export class AuthService {
     }
 
     const user = await this.repository.createWithPassword({
-      email: input.email,
-      passwordHash: hashPassword(input.password),
+      email,
+      passwordHash: await hashPassword(input.password),
       name: input.name,
     });
 
@@ -45,12 +47,13 @@ export class AuthService {
     email: string;
     password: string;
   }): Promise<AuthTokenResponse> {
-    const credential = await this.repository.findCredentialByEmail(input.email);
+    const email = normalizeEmail(input.email);
+    const credential = await this.repository.findCredentialByEmail(email);
     if (!credential || !credential.passwordHash) {
       throw new AppError(401, 'Invalid email or password');
     }
 
-    const valid = verifyPassword(input.password, credential.passwordHash);
+    const valid = await verifyPassword(input.password, credential.passwordHash);
     if (!valid) {
       throw new AppError(401, 'Invalid email or password');
     }
@@ -72,7 +75,7 @@ export class AuthService {
 
     const user = await this.repository.findOrCreateFromGoogle({
       googleSub: googleIdentity.sub,
-      email: googleIdentity.email,
+      email: normalizeEmail(googleIdentity.email),
       name: googleIdentity.name,
       avatarUrl: googleIdentity.picture,
     });

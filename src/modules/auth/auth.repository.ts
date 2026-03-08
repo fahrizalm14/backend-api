@@ -4,6 +4,7 @@ import { injectable } from 'tsyringe';
 import { IAuthRepository, AuthUser } from '@/modules/auth/auth.interface';
 import { mapDbRoleToAppRole } from '@/shared/auth/roles';
 import { prisma } from '@/shared/database/prisma';
+import { normalizeEmail } from '@/shared/utils/email';
 
 @injectable()
 export class AuthRepository implements IAuthRepository {
@@ -12,9 +13,10 @@ export class AuthRepository implements IAuthRepository {
     passwordHash: string;
     name?: string;
   }): Promise<AuthUser> {
+    const email = normalizeEmail(input.email);
     const created = await prisma.user.create({
       data: {
-        email: input.email,
+        email,
         passwordHash: input.passwordHash,
         name: input.name,
         role: Role.MEMBER,
@@ -28,7 +30,8 @@ export class AuthRepository implements IAuthRepository {
     user: AuthUser;
     passwordHash: string | null;
   } | null> {
-    const user = await prisma.user.findUnique({ where: { email } });
+    const normalizedEmail = normalizeEmail(email);
+    const user = await prisma.user.findUnique({ where: { email: normalizedEmail } });
     if (!user) {
       return null;
     }
@@ -45,6 +48,7 @@ export class AuthRepository implements IAuthRepository {
     name?: string;
     avatarUrl?: string;
   }): Promise<AuthUser> {
+    const email = normalizeEmail(input.email);
     const existingAccount = await prisma.googleAccount.findUnique({
       where: { googleSub: input.googleSub },
       include: { user: true },
@@ -54,7 +58,7 @@ export class AuthRepository implements IAuthRepository {
       const updatedUser = await prisma.user.update({
         where: { id: existingAccount.user.id },
         data: {
-          email: input.email,
+          email,
           name: input.name ?? existingAccount.user.name,
           avatarUrl: input.avatarUrl ?? existingAccount.user.avatarUrl,
         },
@@ -63,7 +67,7 @@ export class AuthRepository implements IAuthRepository {
     }
 
     const existingUser = await prisma.user.findUnique({
-      where: { email: input.email },
+      where: { email },
     });
 
     if (existingUser) {
@@ -71,14 +75,14 @@ export class AuthRepository implements IAuthRepository {
         data: {
           userId: existingUser.id,
           googleSub: input.googleSub,
-          email: input.email,
+          email,
         },
       });
 
       const updated = await prisma.user.update({
         where: { id: existingUser.id },
         data: {
-          email: input.email,
+          email,
           name: input.name ?? existingUser.name,
           avatarUrl: input.avatarUrl ?? existingUser.avatarUrl,
         },
@@ -89,14 +93,14 @@ export class AuthRepository implements IAuthRepository {
 
     const created = await prisma.user.create({
       data: {
-        email: input.email,
+        email,
         name: input.name,
         avatarUrl: input.avatarUrl,
         role: Role.MEMBER,
         googleAccounts: {
           create: {
             googleSub: input.googleSub,
-            email: input.email,
+            email,
           },
         },
       },
