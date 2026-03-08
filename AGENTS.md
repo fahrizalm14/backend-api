@@ -5,6 +5,7 @@ Panduan ini berisi aturan implementasi untuk agent/contributor saat menambah ata
 ## 1. Arsitektur dan Alur Request
 
 Gunakan alur berikut secara konsisten:
+
 1. Request masuk ke HTTP adapter (`ExpressHttpServer` atau `FastifyHttpServer`).
 2. Route memanggil controller.
 3. Controller melakukan parsing, validasi, dan ekstraksi auth.
@@ -59,6 +60,7 @@ Status error utama: `400`, `401`, `403`, `404`, `500`.
 ### 3.1 Controller
 
 Controller hanya untuk:
+
 - Parsing request (`params`, `query`, `body`)
 - Validasi Zod
 - Ekstraksi user ID (`requireUserId`)
@@ -69,6 +71,7 @@ Jangan taruh business logic kompleks di controller.
 ### 3.2 Service
 
 Service adalah pusat business logic:
+
 - Business rules
 - Ownership guard
 - Orkestrasi antar repository/service eksternal
@@ -76,6 +79,7 @@ Service adalah pusat business logic:
 ### 3.3 Repository
 
 Repository khusus data access:
+
 - Query/read-write data
 - Menjaga user scoping di query
 
@@ -84,6 +88,7 @@ Repository khusus data access:
 Gunakan `tsyringe` untuk semua modul.
 
 Pola wajib:
+
 1. Definisikan interface + token `Symbol` di `*.interface.ts`.
 2. Register implementasi di `*.container.ts`.
 3. Inject dependency lewat constructor `@inject(...)`.
@@ -102,6 +107,7 @@ Pola wajib:
 ## 6. Menambah Modul Baru
 
 Checklist minimum:
+
 1. Buat folder `src/modules/<module-name>/`.
 2. Buat file:
    - `<module>.routes.ts`
@@ -127,11 +133,13 @@ Checklist minimum:
 ## 8. Testing
 
 Minimal yang harus dijaga:
+
 - Unit test service (business rule + ownership rule)
 - Unit test controller (validasi + mapping response)
 - Integration test endpoint penting (auth, error, pagination)
 
 Area test yang sudah ada:
+
 - `src/config/*.spec.ts`
 - `src/core/**/*.spec.ts`
 - `src/modules/loadModules.spec.ts`

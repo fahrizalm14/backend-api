@@ -1,8 +1,4 @@
-import type {
-  GlobalMiddleware,
-  HttpServer,
-  ModuleDefinition,
-} from '@/core/http/types';
+import type { GlobalMiddleware, HttpServer, ModuleDefinition } from '@/core/http/types';
 import type { Logger } from '@/shared/utils/logger';
 
 type CleanupCallback = () => Promise<void> | void;

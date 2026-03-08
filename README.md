@@ -54,6 +54,8 @@ pnpm start
 
 ```bash
 pnpm typecheck
+pnpm lint
+pnpm format:check
 pnpm test
 ```
 

@@ -144,7 +144,10 @@ export async function registerFastifyCors(
   const origin =
     allowedOrigins.length === 0
       ? true
-      : (requestOrigin: string | undefined, cb: (error: Error | null, allow: boolean) => void) => {
+      : (
+          requestOrigin: string | undefined,
+          cb: (error: Error | null, allow: boolean) => void,
+        ) => {
           cb(null, !requestOrigin || allowedOrigins.includes(requestOrigin));
         };
   await instance.register(fastifyCors, { origin });

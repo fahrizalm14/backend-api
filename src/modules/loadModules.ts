@@ -1,7 +1,4 @@
-import {
-  availableModules,
-  resolveDeploymentTarget,
-} from '@/config/deployment.config';
+import { availableModules, resolveDeploymentTarget } from '@/config/deployment.config';
 import type { ModuleDefinition } from '@/core/http/types';
 import { Logger } from '@/shared/utils/logger';
 

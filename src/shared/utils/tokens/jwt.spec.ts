@@ -17,7 +17,10 @@ test('extractBearerToken mengembalikan null saat format invalid', () => {
 });
 
 test('verifyJwt memverifikasi token valid', () => {
-  const token = jwt.sign({ sub: 'u1', email: 'u1@mail.com', role: 'member' }, env.JWT_SECRET);
+  const token = jwt.sign(
+    { sub: 'u1', email: 'u1@mail.com', role: 'member' },
+    env.JWT_SECRET,
+  );
   const payload = verifyJwt(token);
 
   assert.equal(payload.sub, 'u1');

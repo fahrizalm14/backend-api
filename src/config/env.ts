@@ -17,9 +17,7 @@ const parsePort = (value: string | undefined): number => {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : 2001;
 };
 
-const parseHttpServer = (
-  value: string | undefined,
-): 'express' | 'fastify' => {
+const parseHttpServer = (value: string | undefined): 'express' | 'fastify' => {
   return value === 'fastify' ? 'fastify' : 'express';
 };
 

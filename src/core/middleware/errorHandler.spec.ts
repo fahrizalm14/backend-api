@@ -2,10 +2,7 @@ import { strict as assert } from 'node:assert';
 import test from 'node:test';
 
 import { AppError } from '../errors/AppError';
-import {
-  createExpressErrorHandler,
-  createFastifyErrorHandler,
-} from './errorHandler';
+import { createExpressErrorHandler, createFastifyErrorHandler } from './errorHandler';
 
 const logger = {
   info() {},

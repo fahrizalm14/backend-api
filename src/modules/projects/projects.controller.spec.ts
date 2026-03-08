@@ -27,7 +27,9 @@ test('ProjectsController.list mengembalikan response FE-compatible', async () =>
   };
 
   const controller = new ProjectsController(service as never);
-  const result = await controller.list(buildContext({ query: { page: '1', limit: '10' } }));
+  const result = await controller.list(
+    buildContext({ query: { page: '1', limit: '10' } }),
+  );
 
   const body = result.body as { message: string; data: { data: unknown[] } };
   assert.equal(result.status, 200);

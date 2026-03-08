@@ -22,11 +22,7 @@ export const createExpressErrorHandler =
 
 export const createFastifyErrorHandler =
   (logger: Logger) =>
-  (
-    error: FastifyError,
-    _request: FastifyRequest,
-    reply: FastifyReply,
-  ): void => {
+  (error: FastifyError, _request: FastifyRequest, reply: FastifyReply): void => {
     if (error instanceof AppError) {
       logger.error(`[API Error] ${error.statusCode} - ${error.message}`, error);
       void reply.status(error.statusCode).send({ message: error.message });

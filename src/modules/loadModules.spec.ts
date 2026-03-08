@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { strict as assert } from 'node:assert';
 import test from 'node:test';
 
-import { availableModules, deploymentTargets } from '../config/deployment.config';
+import { availableModules } from '../config/deployment.config';
 import { loadConfiguredModules } from './loadModules';
 
 test('loadConfiguredModules memuat module sesuai deployment target', async () => {
@@ -23,9 +23,7 @@ test('loadConfiguredModules memuat module sesuai deployment target', async () =>
 
 test('loadConfiguredModules mencatat error bila loader tidak ditemukan', async () => {
   const originalProjectsLoader = availableModules.projects;
-  (
-    availableModules as unknown as Record<string, unknown>
-  ).projects = undefined;
+  (availableModules as unknown as Record<string, unknown>).projects = undefined;
 
   const loggerMessages: string[] = [];
   const modules = await loadConfiguredModules('public-api', {
@@ -36,11 +34,12 @@ test('loadConfiguredModules mencatat error bila loader tidak ditemukan', async (
   } as never);
 
   assert.equal(modules.length, 1);
-  assert.ok(loggerMessages.some((message) => message.includes('Module loader not found')));
+  assert.ok(
+    loggerMessages.some((message) => message.includes('Module loader not found')),
+  );
 
-  (
-    availableModules as unknown as Record<string, unknown>
-  ).projects = originalProjectsLoader;
+  (availableModules as unknown as Record<string, unknown>).projects =
+    originalProjectsLoader;
 });
 
 test('loadConfiguredModules fallback ke public-api saat target tidak ditemukan', async () => {

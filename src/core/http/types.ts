@@ -1,10 +1,6 @@
 import type { JwtPayload } from 'jsonwebtoken';
 import type { Request, Response, RequestHandler } from 'express';
-import type {
-  FastifyInstance,
-  FastifyReply,
-  FastifyRequest,
-} from 'fastify';
+import type { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import type { AppRole } from '@/shared/auth/roles';
 
 export type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
@@ -37,9 +33,7 @@ export interface RouteResponse {
   raw?: boolean;
 }
 
-export type RouteHandler = (
-  ctx: RouteContext,
-) => Promise<RouteResponse> | RouteResponse;
+export type RouteHandler = (ctx: RouteContext) => Promise<RouteResponse> | RouteResponse;
 
 export interface RouteDefinition {
   method: HttpMethod;

@@ -12,9 +12,7 @@ import {
 
 @injectable()
 export class ProjectsController extends BaseController {
-  constructor(
-    @inject(ProjectsService) private readonly service: ProjectsService,
-  ) {
+  constructor(@inject(ProjectsService) private readonly service: ProjectsService) {
     super();
   }
 
@@ -25,7 +23,11 @@ export class ProjectsController extends BaseController {
       throw new AppError(400, query.error.issues[0]?.message ?? 'Invalid query');
     }
 
-    const result = await this.service.listProjects(userId, query.data.page, query.data.limit);
+    const result = await this.service.listProjects(
+      userId,
+      query.data.page,
+      query.data.limit,
+    );
     return this.ok(result, 'Projects retrieved successfully');
   }
 

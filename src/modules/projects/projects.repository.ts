@@ -13,7 +13,10 @@ import {
 export class ProjectsRepository implements IProjectsRepository {
   private readonly rows: Project[] = [];
 
-  async listByUser(userId: string, pagination: PaginationInput): Promise<PaginatedProjects> {
+  async listByUser(
+    userId: string,
+    pagination: PaginationInput,
+  ): Promise<PaginatedProjects> {
     const filtered = this.rows.filter((item) => item.userId === userId);
     const start = (pagination.page - 1) * pagination.limit;
     const pageData = filtered.slice(start, start + pagination.limit);
@@ -46,7 +49,9 @@ export class ProjectsRepository implements IProjectsRepository {
   }
 
   async findById(userId: string, projectId: string): Promise<Project | null> {
-    return this.rows.find((item) => item.userId === userId && item.id === projectId) ?? null;
+    return (
+      this.rows.find((item) => item.userId === userId && item.id === projectId) ?? null
+    );
   }
 
   async update(
@@ -75,7 +80,9 @@ export class ProjectsRepository implements IProjectsRepository {
 
   async delete(userId: string, projectId: string): Promise<boolean> {
     const before = this.rows.length;
-    const keep = this.rows.filter((item) => !(item.userId === userId && item.id === projectId));
+    const keep = this.rows.filter(
+      (item) => !(item.userId === userId && item.id === projectId),
+    );
     this.rows.splice(0, this.rows.length, ...keep);
     return keep.length !== before;
   }
