@@ -11,6 +11,7 @@ const sidebars: SidebarsConfig = {
     'development-workflow',
     'operations',
     'troubleshooting',
+    'contributing',
   ],
 };
 
