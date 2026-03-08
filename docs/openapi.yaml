@@ -1,0 +1,459 @@
+openapi: 3.0.3
+info:
+  title: Backend API
+  version: 1.0.0
+  description: API documentation for public-api target.
+servers:
+  - url: http://localhost:2001
+    description: Local public-api
+tags:
+  - name: Health
+  - name: Auth
+  - name: Projects
+paths:
+  /v1/health:
+    get:
+      tags: [Health]
+      summary: Health check
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthEnvelope'
+  /v1/auth/register:
+    post:
+      tags: [Auth]
+      summary: Register with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+      responses:
+        '201':
+          description: Register successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenEnvelope'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '409':
+          $ref: '#/components/responses/ErrorResponse'
+  /v1/auth/login:
+    post:
+      tags: [Auth]
+      summary: Login with email and password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenEnvelope'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+  /v1/auth/google/login:
+    post:
+      tags: [Auth]
+      summary: Login with Google ID token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GoogleLoginRequest'
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthTokenEnvelope'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+  /v1/auth/me:
+    get:
+      tags: [Auth]
+      summary: Get current user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Current user retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserEnvelope'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+  /v1/auth/admin/ping:
+    get:
+      tags: [Auth]
+      summary: Admin-only access check
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Admin access granted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminPingEnvelope'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '403':
+          $ref: '#/components/responses/ErrorResponse'
+  /v1/projects:
+    get:
+      tags: [Projects]
+      summary: List projects
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: page
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 10
+      responses:
+        '200':
+          description: Projects retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProjectsEnvelope'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+    post:
+      tags: [Projects]
+      summary: Create project
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateProjectRequest'
+      responses:
+        '201':
+          description: Project created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectEnvelope'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+  /v1/projects/{projectId}:
+    get:
+      tags: [Projects]
+      summary: Get project detail
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+      responses:
+        '200':
+          description: Project retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectEnvelope'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+    patch:
+      tags: [Projects]
+      summary: Update project
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProjectRequest'
+      responses:
+        '200':
+          description: Project updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectEnvelope'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+    delete:
+      tags: [Projects]
+      summary: Delete project
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/ProjectId'
+      responses:
+        '200':
+          description: Project deleted successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteProjectEnvelope'
+        '401':
+          $ref: '#/components/responses/ErrorResponse'
+        '404':
+          $ref: '#/components/responses/ErrorResponse'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    ProjectId:
+      in: path
+      name: projectId
+      required: true
+      schema:
+        type: string
+      description: Project ID
+  responses:
+    ErrorResponse:
+      description: Error response
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    ErrorResponse:
+      type: object
+      required: [message]
+      properties:
+        message:
+          type: string
+    HealthData:
+      type: object
+      required: [uptime]
+      properties:
+        uptime:
+          type: number
+    HealthEnvelope:
+      type: object
+      required: [message, data]
+      properties:
+        message:
+          type: string
+          example: Service is healthy
+        data:
+          $ref: '#/components/schemas/HealthData'
+    AuthUser:
+      type: object
+      required: [id, email, role, name, avatarUrl]
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+          format: email
+        role:
+          type: string
+          enum: [admin, member]
+        name:
+          type: string
+          nullable: true
+        avatarUrl:
+          type: string
+          nullable: true
+    AuthTokenData:
+      type: object
+      required: [accessToken, tokenType, expiresIn, user]
+      properties:
+        accessToken:
+          type: string
+        tokenType:
+          type: string
+          example: Bearer
+        expiresIn:
+          type: string
+          example: 7d
+        user:
+          $ref: '#/components/schemas/AuthUser'
+    AuthTokenEnvelope:
+      type: object
+      required: [message, data]
+      properties:
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/AuthTokenData'
+    UserEnvelope:
+      type: object
+      required: [message, data]
+      properties:
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/AuthUser'
+    AdminPingEnvelope:
+      type: object
+      required: [message, data]
+      properties:
+        message:
+          type: string
+        data:
+          type: object
+          required: [ok]
+          properties:
+            ok:
+              type: boolean
+              example: true
+    RegisterRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          minLength: 8
+        name:
+          type: string
+          minLength: 2
+    LoginRequest:
+      type: object
+      required: [email, password]
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+    GoogleLoginRequest:
+      type: object
+      required: [idToken]
+      properties:
+        idToken:
+          type: string
+          minLength: 10
+    Project:
+      type: object
+      required: [id, userId, name, description, createdAt, updatedAt]
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    PaginationMeta:
+      type: object
+      required: [total, page, limit, totalPages]
+      properties:
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        totalPages:
+          type: integer
+    PaginatedProjectsData:
+      type: object
+      required: [data, meta]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Project'
+        meta:
+          $ref: '#/components/schemas/PaginationMeta'
+    PaginatedProjectsEnvelope:
+      type: object
+      required: [message, data]
+      properties:
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/PaginatedProjectsData'
+    ProjectEnvelope:
+      type: object
+      required: [message, data]
+      properties:
+        message:
+          type: string
+        data:
+          $ref: '#/components/schemas/Project'
+    DeleteProjectEnvelope:
+      type: object
+      required: [message, data]
+      properties:
+        message:
+          type: string
+        data:
+          type: boolean
+          example: true
+    CreateProjectRequest:
+      type: object
+      required: [name]
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 120
+        description:
+          type: string
+          maxLength: 1000
+    UpdateProjectRequest:
+      type: object
+      minProperties: 1
+      properties:
+        name:
+          type: string
+          minLength: 2
+          maxLength: 120
+        description:
+          type: string
+          nullable: true
+          maxLength: 1000

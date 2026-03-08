@@ -112,6 +112,19 @@ PORT=2020
 - `400 Invalid payload/query`: input tidak lolos validasi
 - Server tidak jalan: cek `PORT` dan konflik port
 
-## 5. Lisensi
+## 5. API Docs
+
+- OpenAPI spec: `docs/openapi.yaml`
+- HTML docs (Swagger UI / Try it out): `docs/index.html`
+
+Contoh buka lokal:
+
+```bash
+npx serve docs
+```
+
+Lalu akses `http://localhost:3000`.
+
+## 6. Lisensi
 
 Belum ditentukan. Sesuaikan kebijakan organisasi sebelum produksi.
