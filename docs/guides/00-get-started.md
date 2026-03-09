@@ -27,9 +27,14 @@ pnpm install
 ## 4. Jalankan Backend
 
 ```bash
-cp env/public-api.env.example .env
+cp env/public-api.env.example env/public-api.env
 pnpm dev:public
 ```
+
+Catatan:
+
+- Development/Test membaca env dari file service di folder `env/`.
+- Production membaca env dari root `.env`.
 
 ## 5. Quality Check
 

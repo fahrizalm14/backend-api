@@ -8,8 +8,15 @@ title: Development Workflow
 
 ```bash
 pnpm install
-cp env/public-api.env.example .env
+cp env/public-api.env.example env/public-api.env
+cp env/internal-api.env.example env/internal-api.env
+cp env/worker.env.example env/worker.env
 ```
+
+Mode env:
+
+- Development/Test: load `env/<service>.env` sesuai `DEPLOYMENT_TARGET`
+- Production: load root `.env`
 
 ## Commands
 

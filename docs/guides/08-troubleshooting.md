@@ -22,6 +22,18 @@ Role user tidak memenuhi `requiredRoles` pada endpoint.
 
 Input tidak lolos validasi schema (Zod).
 
+### Startup error: missing env file
+
+- Development/Test: pastikan file `env/<service>.env` ada sesuai `DEPLOYMENT_TARGET`.
+- Production: pastikan root `.env` tersedia.
+
+### Startup error: missing required env
+
+Untuk `public-api`, pastikan minimal:
+
+- `JWT_SECRET`
+- `DATABASE_URL`
+
 ## Build and Type Errors
 
 Jalankan berurutan:
