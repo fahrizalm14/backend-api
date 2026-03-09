@@ -11,5 +11,6 @@ declare namespace NodeJS {
     CORS_ALLOWED_ORIGINS?: string;
     REFRESH_TOKEN_COOKIE_NAME?: string;
     REFRESH_TOKEN_TTL_DAYS?: string;
+    ENV_FILE?: string;
   }
 }

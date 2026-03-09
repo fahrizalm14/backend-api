@@ -14,12 +14,13 @@ async function main() {
   const logger = container.resolve(Logger);
   const resolvedTarget = resolveDeploymentTarget(env.DEPLOYMENT_TARGET);
   const targetName = resolvedTarget.targetName;
-  const target = resolvedTarget.target;
   assertSecurityEnv(targetName);
 
   logger.info(`Starting target: ${targetName}`);
+  logger.info(`Env source: ${env.ENV_SOURCE}`);
+  logger.info(`Env file: ${env.ENV_FILE_LOADED ?? '(not found)'}`);
 
-  const port = process.env.PORT ? env.PORT : target.port;
+  const port = env.PORT;
   const server = createHttpServer(env.HTTP_SERVER, logger);
   const app = new App({
     server,

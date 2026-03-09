@@ -17,4 +17,8 @@ test('env memiliki default dan shape valid', () => {
   assert.equal(typeof env.REFRESH_TOKEN_COOKIE_NAME, 'string');
   assert.ok(Number.isInteger(env.REFRESH_TOKEN_TTL_DAYS));
   assert.ok(env.REFRESH_TOKEN_TTL_DAYS > 0);
+  assert.ok(['development', 'test', 'production'].includes(env.NODE_ENV));
+  assert.equal(typeof env.IS_PRODUCTION, 'boolean');
+  assert.ok(['root', 'service', 'none'].includes(env.ENV_SOURCE));
+  assert.ok(env.ENV_FILE_LOADED === null || typeof env.ENV_FILE_LOADED === 'string');
 });

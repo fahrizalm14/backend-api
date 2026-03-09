@@ -15,15 +15,28 @@ Panduan implementasi untuk agent/contributor ada di [AGENTS.md](./AGENTS.md).
 
 ```bash
 pnpm install
-cp env/public-api.env.example .env
+cp env/public-api.env.example env/public-api.env
 ```
 
 Alternatif target lain:
 
 ```bash
-cp env/internal-api.env.example .env
-cp env/worker.env.example .env
+cp env/internal-api.env.example env/internal-api.env
+cp env/worker.env.example env/worker.env
 ```
+
+Setiap service membaca env file masing-masing dari folder `env/`:
+
+- `public-api` -> `env/public-api.env`
+- `internal-api` -> `env/internal-api.env`
+- `worker` -> `env/worker.env`
+
+Aturan load env:
+- Development/Test: hanya load file service dari `env/*` (sesuai `DEPLOYMENT_TARGET`)
+- Production: hanya load root `.env`
+
+Mapping service -> file env dipusatkan di:
+`src/config/envTargetRules.ts` (`envFileMap`).
 
 ### 1.3 Development
 
@@ -49,6 +62,7 @@ pnpm start
 ```
 
 `pnpm start` menjalankan `dist/main.js` dan target ditentukan oleh `DEPLOYMENT_TARGET` di environment.
+Env akan di-load otomatis dari file target terkait di folder `env/`.
 
 ### 1.5 Type Check dan Test
 

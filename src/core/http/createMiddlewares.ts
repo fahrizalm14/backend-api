@@ -6,7 +6,7 @@ import { registerFastifyCors } from '@/core/http/FastifyHttpServer';
 
 export function createGlobalMiddlewares(): GlobalMiddleware[] {
   const allowedOrigins = env.CORS_ALLOWED_ORIGINS;
-  const allowAllOriginsWhenEmpty = process.env.NODE_ENV !== 'production';
+  const allowAllOriginsWhenEmpty = !env.IS_PRODUCTION;
   const expressOrigin: cors.CorsOptions['origin'] =
     allowedOrigins.length === 0 && allowAllOriginsWhenEmpty
       ? true

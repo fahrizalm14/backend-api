@@ -195,7 +195,7 @@ export class AuthController extends BaseController {
   private buildRefreshCookie(refreshToken: string): string {
     return serializeCookie(env.REFRESH_TOKEN_COOKIE_NAME, refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: env.IS_PRODUCTION,
       sameSite: 'Strict',
       path: '/',
       maxAge: env.REFRESH_TOKEN_TTL_DAYS * 24 * 60 * 60,
@@ -205,7 +205,7 @@ export class AuthController extends BaseController {
   private buildClearRefreshCookie(): string {
     return serializeCookie(env.REFRESH_TOKEN_COOKIE_NAME, '', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
+      secure: env.IS_PRODUCTION,
       sameSite: 'Strict',
       path: '/',
       maxAge: 0,
