@@ -109,6 +109,58 @@ Contoh:
 - `gateway` butuh `JWT_SECRET` dan `DATABASE_URL`
 - `worker` tidak butuh `JWT_SECRET`
 
+## Tambah Variable Env Baru
+
+Checklist yang perlu diubah:
+
+1. Tambah type di `src/types.d.ts` (`ProcessEnv`).
+2. Tambah field di interface `Env` pada `src/config/env.ts`.
+3. Tambah parsing/default value di object `env` pada `src/config/env.ts`.
+4. Jika wajib untuk target tertentu, tambahkan key ke `requiredVars` di
+   `src/config/envTargetRules.ts`.
+5. Isi value di file `env/<service>.env` dan `env/<service>.env.example`.
+6. Tambahkan assert di `src/config/env.spec.ts`.
+7. Update docs jika variable ini perlu diketahui tim/client.
+
+### Contoh: tambah `REDIS_URL` untuk `worker`
+
+1. `src/types.d.ts`:
+
+```ts
+interface ProcessEnv {
+  REDIS_URL?: string;
+}
+```
+
+2. `src/config/env.ts`:
+
+```ts
+export interface Env {
+  REDIS_URL: string;
+}
+
+export const env: Env = {
+  REDIS_URL: process.env.REDIS_URL ?? '',
+};
+```
+
+3. `src/config/envTargetRules.ts`:
+
+```ts
+export const envTargetRules = {
+  worker: {
+    requiredVars: ['REDIS_URL'],
+  },
+};
+```
+
+4. isi env:
+
+```env
+# env/worker.env
+REDIS_URL=redis://localhost:6379
+```
+
 ## Validasi Setelah Perubahan
 
 Jalankan:
